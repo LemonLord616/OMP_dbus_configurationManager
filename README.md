@@ -9,6 +9,8 @@ Compile from source or install (if Debian-based, e.g. Ubuntu, Linux Mint, Pop!_O
 
 > sudo apt install libsdbus-c++-dev libsdbus-c++-bin libsdbus-c++-dev libsdbus-c++1 
 
+CMake
+
 > sudo apt install cmake make
 
 Install any C++17-compatible compiler
