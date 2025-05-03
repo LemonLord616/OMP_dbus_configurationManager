@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<node>
+	<interface name="com.system.configurationManager.Application.Configuration">
+		<method name="ChangeConfiguration">
+			<arg name="key" type="s" direction="in"/>
+			<arg name="value" type="v" direction="in"/>
+		</method>
+		<method name="GetConfiguration">
+			<arg name="configuration" type="a{sv}" direction="out"/>
+		</method>
+		<signal name="configurationChanged">
+			<arg name="configuration" type="a{sv}"/>
+		</signal>
+	</interface>
+</node>

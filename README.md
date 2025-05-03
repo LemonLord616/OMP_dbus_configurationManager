@@ -3,11 +3,14 @@
 Test task for internship in Open Mobile Platform
 
 
-# dependencies
+# Dependencies
+
+Compile from source or install (if Debian-based, e.g. Ubuntu, Linux Mint, Pop!_OS):
 
 > sudo apt install libsdbus-c++-dev libsdbus-c++-bin libsdbus-c++-dev libsdbus-c++1 
+
 > sudo apt install cmake make
 
-install any C++17-compatible compiler
+Install any C++17-compatible compiler
 
 > sudo apt install g++
