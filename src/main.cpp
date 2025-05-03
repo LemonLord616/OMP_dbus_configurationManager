@@ -1,24 +1,22 @@
+#include "ConfigurationManagerService.hpp"
 #include <sdbus-c++/sdbus-c++.h>
 #include <iostream>
 
 int main() 
 {
 	
-	constexpr const char* service_name = "com.example.service";
-	constexpr const char* object_path = "/com/example/configurationManager/Object";
-	constexpr const char* interface_name = "com.example.service.testInterface";
-
+	const std::string service_name = "com.system.configurationManager";
+	const std::string service_path = "/com/system/configurationManager";
+	const std::string config_path = "~/com.system.configurationManager";
 	
 	auto connection = sdbus::createSessionBusConnection(service_name);
+	std::cout << "Connection created" << std::endl;
+
+	auto service = ConfigurationManagerService(*connection, service_path);
 	
-	auto object = sdbus::createObject(*connection, object_path);
+	service.parseConfig(config_path);
 
-	object->registerMethod("testMethod")
-		.onInterface(interface_name)
-		.implementedAs([](){ return "Hello World!"; }); 
-
-	object->finishRegistration();
-
+	std::cout << "Service started" << std::endl;
 	std::cout << "Service is running..." << std::endl;
 	connection->enterEventLoop();
 

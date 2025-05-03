@@ -14,6 +14,8 @@ add_custom_command(
 		--proxy=${GENERATED_PATH}/Configuration_proxy.hpp
 	DEPENDS
 		${SDBUS_INTROSPECTION_XML}
+	COMMENT
+		"Generating D-Bus interfaces"
 )
 
 add_custom_target(GenerateSDBusInterfaces

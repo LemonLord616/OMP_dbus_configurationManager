@@ -11,7 +11,8 @@ find_package(nlohmann_json 3.2.0 REQUIRED)
 
 add_executable(configurationManager 
 	src/main.cpp
-	src/configurationManagerService.cpp
+	src/ConfigurationManagerService.cpp
+	src/ApplicationDBusAdapter.cpp
 )
 
 target_link_libraries(configurationManager
