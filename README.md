@@ -1,20 +1,126 @@
-# OMP_dbus_configurationManager
+# D-Bus Configuration Manager
 
-Test task for internship in Open Mobile Platform
+This project implements a **D-Bus**-based configuration manager in C++ using **sdbus-c++** and **nlohmann/json**. It contains a core service that creates application configuration objects over D-Bus, and generated adapters/proxies for easy integration.
 
+## Features
 
-# Dependencies
+* **Dynamic configuration loading** from JSON files in `~/com.system.configurationManager/` directory.
+* **D-Bus service** (`com.system.configurationManager`) registers per-application objects at paths like `/com/system/configurationManager/Application/<appName>`.
+* **Methods**:
 
-Compile from source or install (if Debian-based, e.g. Ubuntu, Linux Mint, Pop!_OS):
+  * `ChangeConfiguration(s key, v value)` — change a single configuration parameter.
+  * `GetConfiguration()` — get the full configuration as a map of `<string, variant>`.
+* **Signal**:
 
-> sudo apt install libsdbus-c++-dev libsdbus-c++-bin libsdbus-c++-dev libsdbus-c++1 
+  * `configurationChanged(a{sv} configuration)` — emitted whenever a configuration changes.
+* **Client adapter** (`ApplicationDBusAdapter`) generated via `sdbus-c++-xml2cpp` and extended to implement business logic.
 
-> sudo apt install nlohmann-json3-dev # Actually I am not sure, I had this lib already installed
+## Prerequisites
 
-CMake
+* Linux (Debian-based recommended)
+* **CMake** ≥ 3.10
+* **C++17** compiler (GCC, Clang)
+* **sdbus-c++** library and headers (e.g. `libsdbus-c++-dev`)
+* **nlohmann/json** library (e.g. `nlohmann-json3-dev`)
+* **libglib2.0-bin** (for `gdbus`) to introspect and call methods
 
-> sudo apt install cmake make
+## Repository Structure
 
-Install any C++17-compatible compiler
+```
+📦
+├── 📂 build
+├── 📂 cache
+├── 📂 cmake
+│ └── GenerateSDBusInterfaces.cmake
+├── 📂 include
+│ ├── Application.hpp
+│ ├── ApplicationDBusAdapter.hpp
+│ └── ConfigurationManagerService.hpp
+├── 📂 interfaces
+│ └── com.system.configurationManager.Application.Configuration.xml
+├── 📂 src
+│ ├── 📂 generated
+│ │ ├── Configuration_adapter.hpp
+│ │ └── Configuration_proxy.hpp
+│ ├── ApplicationDBusAdapter.cpp
+│ ├── ConfigurationManagerService.cpp
+│ └── main.cpp
+├── .gitignore
+├── CMakeLists.txt
+└── README.md```
 
-> sudo apt install g++
+## Build Instructions
+
+1. **Clone** the repository:
+
+   ```bash
+   git clone https://github.com/LemonLord616/OMP_dbus_configurationManager.git
+   cd OMP_dbus_configurationManager
+   ```
+2. **Install** dependencies:
+
+   ```bash
+   sudo apt update
+   sudo apt install cmake libsdbus-c++-dev nlohmann-json3-dev libglib2.0-bin
+   ```
+3. **Generate** and **build**:
+
+   ```bash
+   mkdir -p build && cd build
+   cmake ..
+   cmake --build .
+   ```
+
+> **Note**: Generated adapter/proxy headers are already present in `src/generated/` and committed to this repository, so regeneration is optional. To manually regenerate after updating the XML, run:
+>
+> ```bash
+> make GenerateSDBusInterfaces
+> ```
+
+## Running the Service
+
+1. **Prepare configuration directory** (one-time):
+
+   ```bash
+   mkdir -p ~/com.system.configurationManager
+   cp configs/com.system.configurationManager/*.json ~/com.system.configurationManager/
+   ```
+2. **Start** the D-Bus service:
+
+   ```bash
+   ./build/configurationManager
+   ```
+
+   The service will read all `*.json` files in the config folder and register corresponding D-Bus objects.
+
+## Introspection & Method Calls
+
+* **List services**:
+
+  ```bash
+  gdbus list --session
+  ```
+* **Introspect an object**:
+
+  ```bash
+  gdbus introspect --session \
+    --dest com.system.configurationManager \
+    --object-path /com/system/configurationManager/Application/music_player
+  ```
+* **Call a method** (e.g., get config):
+
+  ```bash
+  gdbus call --session \
+    --dest com.system.configurationManager \
+    --object-path /com/system/configurationManager/Application/music_player \
+    --method com.system.configurationManager.Application.Configuration.GetConfiguration
+  ```
+* **Change a parameter**:
+
+  ```bash
+  gdbus call --session \
+    --dest com.system.configurationManager \
+    --object-path /com/system/configurationManager/Application/music_player \
+    --method com.system.configurationManager.Application.Configuration.ChangeConfiguration \
+    '"volume"' 'uint32 60'
+  ```
