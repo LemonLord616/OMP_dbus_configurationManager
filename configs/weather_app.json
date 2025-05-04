@@ -1,0 +1,7 @@
+{
+    "units": "metric",
+    "location": "New York",
+    "update_interval": 30,
+    "notifications": true
+}
+
