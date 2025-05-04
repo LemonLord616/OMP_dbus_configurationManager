@@ -1,6 +1,6 @@
 set(SDBUS_INTROSPECTION_XML ${CMAKE_CURRENT_SOURCE_DIR}/interfaces/com.system.configurationManager.Application.Configuration.xml)
 
-set(GENERATED_PATH ${CMAKE_CURRENT_SOURCE_DIR}/src/generated)
+set(GENERATED_PATH ${CMAKE_CURRENT_SOURCE_DIR}/generated)
 file(MAKE_DIRECTORY ${GENERATED_PATH})
 
 add_custom_command(

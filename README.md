@@ -47,31 +47,49 @@ This project implements a **D-Bus**-based configuration manager in C++ using **s
 │ └── main.cpp
 ├── .gitignore
 ├── CMakeLists.txt
-└── README.md```
+└── README.md
+```
 
 ## Build Instructions
 
 1. **Clone** the repository:
 
-   ```bash
-   git clone https://github.com/LemonLord616/OMP_dbus_configurationManager.git
-   cd OMP_dbus_configurationManager
-   ```
+	```bash
+	git clone https://github.com/LemonLord616/OMP_dbus_configurationManager.git
+	cd OMP_dbus_configurationManager
+	```
 2. **Install** dependencies:
 
-   ```bash
-   sudo apt update
-   sudo apt install cmake libsdbus-c++-dev nlohmann-json3-dev libglib2.0-bin
-   ```
-3. **Generate** and **build**:
+	```bash
+	sudo apt update
+	sudo apt install cmake libsdbus-c++-dev nlohmann-json3-dev libglib2.0-bin
+	```
+3. **Configure the project**:
 
-   ```bash
-   mkdir -p build && cd build
-   cmake ..
-   cmake --build .
-   ```
+	```bash
+	mkdir -p build && cd build
+	cmake ..
+	```
+4. **Build service or client selectively**
+  * Build **only the service**:
 
-> **Note**: Generated adapter/proxy headers are already present in `src/generated/` and committed to this repository, so regeneration is optional. To manually regenerate after updating the XML, run:
+    ```bash
+    cmake --build . --target service
+    ```
+  * Build **only the client application**:
+
+    ```bash
+    cmake --build . --target client
+    ```
+  * Build **everything (default)**:
+
+    ```bash
+    cmake --build .
+    ```
+
+
+> ⚙️ **Note:**
+> Generated adapter/proxy headers are already present in `./generated` and committed to this repository, so regeneration is optional. To manually regenerate after updating the XML, run:
 >
 > ```bash
 > make GenerateSDBusInterfaces
@@ -81,17 +99,17 @@ This project implements a **D-Bus**-based configuration manager in C++ using **s
 
 1. **Prepare configuration directory** (one-time):
 
-   ```bash
-   mkdir -p ~/com.system.configurationManager
-   cp configs/com.system.configurationManager/*.json ~/com.system.configurationManager/
-   ```
+	```bash
+	mkdir -p ~/com.system.configurationManager
+	cp configs/com.system.configurationManager/*.json ~/com.system.configurationManager/
+	```
 2. **Start** the D-Bus service:
 
-   ```bash
-   ./build/configurationManager
-   ```
+	```bash
+	./build/src/configurationManager
+	```
 
-   The service will read all `*.json` files in the config folder and register corresponding D-Bus objects.
+	The service will read all `*.json` files in the config folder and register corresponding D-Bus objects.
 
 ## Introspection & Method Calls
 
@@ -104,23 +122,23 @@ This project implements a **D-Bus**-based configuration manager in C++ using **s
 
   ```bash
   gdbus introspect --session \
-    --dest com.system.configurationManager \
-    --object-path /com/system/configurationManager/Application/music_player
+	  --dest com.system.configurationManager \
+	  --object-path /com/system/configurationManager/Application/music_player
   ```
 * **Call a method** (e.g., get config):
 
   ```bash
   gdbus call --session \
-    --dest com.system.configurationManager \
-    --object-path /com/system/configurationManager/Application/music_player \
-    --method com.system.configurationManager.Application.Configuration.GetConfiguration
+	  --dest com.system.configurationManager \
+	  --object-path /com/system/configurationManager/Application/music_player \
+	  --method com.system.configurationManager.Application.Configuration.GetConfiguration
   ```
 * **Change a parameter**:
 
   ```bash
   gdbus call --session \
-    --dest com.system.configurationManager \
-    --object-path /com/system/configurationManager/Application/music_player \
-    --method com.system.configurationManager.Application.Configuration.ChangeConfiguration \
-    '"volume"' 'uint32 60'
+	  --dest com.system.configurationManager \
+	  --object-path /com/system/configurationManager/Application/music_player \
+	  --method com.system.configurationManager.Application.Configuration.ChangeConfiguration \
+	  '"volume"' 'uint32 60'
   ```
