@@ -1,9 +1,10 @@
 add_executable(confManagerApplication1
 	main.cpp
 	TimeoutApp.cpp
+	TimeoutAppDBusProxy.cpp
 )
 target_include_directories(confManagerApplication1
-	PRIVATE ${CMAKE_SOURCE_DIR}/include
+	PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}
 		${CMAKE_SOURCE_DIR}/generated
 )
 target_link_libraries(confManagerApplication1

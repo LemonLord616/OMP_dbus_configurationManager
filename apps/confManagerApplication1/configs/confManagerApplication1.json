@@ -1,4 +1,4 @@
 {
 	"Timeout": 2000,
-	"TimeouPhrase": "Time is out."
+	"TimeoutPhrase": "*tick*"
 }

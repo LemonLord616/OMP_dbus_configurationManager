@@ -8,11 +8,11 @@ This project implements a **D-Bus**-based configuration manager in C++ using **s
 * **D-Bus service** (`com.system.configurationManager`) registers per-application objects at paths like `/com/system/configurationManager/Application/<appName>`.
 * **Methods**:
 
-  * `ChangeConfiguration(s key, v value)` — change a single configuration parameter.
-  * `GetConfiguration()` — get the full configuration as a map of `<string, variant>`.
+	* `ChangeConfiguration(s key, v value)` — change a single configuration parameter.
+	* `GetConfiguration()` — get the full configuration as a map of `<string, variant>`.
 * **Signal**:
 
-  * `configurationChanged(a{sv} configuration)` — emitted whenever a configuration changes.
+	* `configurationChanged(a{sv} configuration)` — emitted whenever a configuration changes.
 * **Client adapter** (`ApplicationDBusAdapter`) generated via `sdbus-c++-xml2cpp` and extended to implement business logic.
 
 ## Prerequisites
@@ -71,21 +71,21 @@ This project implements a **D-Bus**-based configuration manager in C++ using **s
 	cmake ..
 	```
 4. **Build service or client selectively**
-  * Build **only the service**:
+	* Build **only the service**:
 
-    ```bash
-    cmake --build . --target service
-    ```
-  * Build **only the client application**:
+		```bash
+		cmake --build . --target service
+		```
+	* Build **only the client application**:
 
-    ```bash
-    cmake --build . --target client
-    ```
-  * Build **everything (default)**:
+		```bash
+		cmake --build . --target client
+		```
+	* Build **everything (default)**:
 
-    ```bash
-    cmake --build .
-    ```
+		```bash
+		cmake --build .
+		```
 
 
 > ⚙️ **Note:**
@@ -115,30 +115,30 @@ This project implements a **D-Bus**-based configuration manager in C++ using **s
 
 * **List services**:
 
-  ```bash
-  gdbus list --session
-  ```
+	```bash
+	gdbus list --session
+	```
 * **Introspect an object**:
 
-  ```bash
-  gdbus introspect --session \
-	  --dest com.system.configurationManager \
-	  --object-path /com/system/configurationManager/Application/music_player
-  ```
+	```bash
+	gdbus introspect --session \
+		--dest com.system.configurationManager \
+		--object-path /com/system/configurationManager/Application/music_player
+	```
 * **Call a method** (e.g., get config):
 
-  ```bash
-  gdbus call --session \
-	  --dest com.system.configurationManager \
-	  --object-path /com/system/configurationManager/Application/music_player \
-	  --method com.system.configurationManager.Application.Configuration.GetConfiguration
-  ```
+	```bash
+	gdbus call --session \
+		--dest com.system.configurationManager \
+		--object-path /com/system/configurationManager/Application/music_player \
+		--method com.system.configurationManager.Application.Configuration.GetConfiguration
+	```
 * **Change a parameter**:
 
-  ```bash
-  gdbus call --session \
-	  --dest com.system.configurationManager \
-	  --object-path /com/system/configurationManager/Application/music_player \
-	  --method com.system.configurationManager.Application.Configuration.ChangeConfiguration \
-	  '"volume"' 'uint32 60'
-  ```
+	```bash
+	gdbus call --session \
+		--dest com.system.configurationManager \
+		--object-path /com/system/configurationManager/Application/music_player \
+		--method com.system.configurationManager.Application.Configuration.ChangeConfiguration \
+		'"volume"' 'uint32 60'
+	```
