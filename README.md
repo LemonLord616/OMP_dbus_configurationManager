@@ -120,7 +120,7 @@ This project implements a **D-Bus**-based configuration manager in C++ using **s
 
 	```bash
 	mkdir -p ~/com.system.configurationManager
-	cp apps/confManagerApplication1/*.json ~/com.system.configurationManager/
+	cp configs/com.system.configurationManager/*.json ~/com.system.configurationManager/
 	```
 
 2. **Start** the D-Bus service:
@@ -149,7 +149,7 @@ A sample client (`confManagerApplication1`) is located at `apps/confManagerAppli
 
 	```bash
 	mkdir -p ~/com.system.configurationManager
-	cp configs/com.system.configurationManager/*.json ~/com.system.configurationManager/
+	cp apps/confManagerApplication1/configs/*.json ~/com.system.configurationManager/
 	```
 
 2. **Start**:
