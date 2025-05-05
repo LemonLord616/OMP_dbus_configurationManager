@@ -15,41 +15,50 @@ namespace system {
 namespace configurationManager {
 namespace Application {
 
-class Configuration_adaptor
-{
+class Configuration_adaptor {
 public:
-    static constexpr const char* INTERFACE_NAME = "com.system.configurationManager.Application.Configuration";
+	static constexpr const char *INTERFACE_NAME = "com.system.configurationManager.Application.Configuration";
 
 protected:
-    Configuration_adaptor(sdbus::IObject& object)
-        : object_(&object)
-    {
-        object_->registerMethod("ChangeConfiguration").onInterface(INTERFACE_NAME).withInputParamNames("key", "value").implementedAs([this](const std::string& key, const sdbus::Variant& value){ return this->ChangeConfiguration(key, value); });
-        object_->registerMethod("GetConfiguration").onInterface(INTERFACE_NAME).withOutputParamNames("configuration").implementedAs([this](){ return this->GetConfiguration(); });
-        object_->registerSignal("configurationChanged").onInterface(INTERFACE_NAME).withParameters<std::map<std::string, sdbus::Variant>>("configuration");
-    }
+	Configuration_adaptor(sdbus::IObject &object) : object_(&object) {
+		object_->registerMethod("ChangeConfiguration")
+		    .onInterface(INTERFACE_NAME)
+		    .withInputParamNames("key", "value")
+		    .implementedAs([this](const std::string &key, const sdbus::Variant &value) {
+			    return this->ChangeConfiguration(key, value);
+		    });
+		object_->registerMethod("GetConfiguration")
+		    .onInterface(INTERFACE_NAME)
+		    .withOutputParamNames("configuration")
+		    .implementedAs([this]() { return this->GetConfiguration(); });
+		object_->registerSignal("configurationChanged")
+		    .onInterface(INTERFACE_NAME)
+		    .withParameters<std::map<std::string, sdbus::Variant>>("configuration");
+	}
 
-    Configuration_adaptor(const Configuration_adaptor&) = delete;
-    Configuration_adaptor& operator=(const Configuration_adaptor&) = delete;
-    Configuration_adaptor(Configuration_adaptor&&) = default;
-    Configuration_adaptor& operator=(Configuration_adaptor&&) = default;
+	Configuration_adaptor(const Configuration_adaptor &) = delete;
+	Configuration_adaptor &operator=(const Configuration_adaptor &) = delete;
+	Configuration_adaptor(Configuration_adaptor &&) = default;
+	Configuration_adaptor &operator=(Configuration_adaptor &&) = default;
 
-    ~Configuration_adaptor() = default;
+	~Configuration_adaptor() = default;
 
 public:
-    void emitConfigurationChanged(const std::map<std::string, sdbus::Variant>& configuration)
-    {
-        object_->emitSignal("configurationChanged").onInterface(INTERFACE_NAME).withArguments(configuration);
-    }
+	void emitConfigurationChanged(const std::map<std::string, sdbus::Variant> &configuration) {
+		object_->emitSignal("configurationChanged").onInterface(INTERFACE_NAME).withArguments(configuration);
+	}
 
 private:
-    virtual void ChangeConfiguration(const std::string& key, const sdbus::Variant& value) = 0;
-    virtual std::map<std::string, sdbus::Variant> GetConfiguration() = 0;
+	virtual void ChangeConfiguration(const std::string &key, const sdbus::Variant &value) = 0;
+	virtual std::map<std::string, sdbus::Variant> GetConfiguration() = 0;
 
 private:
-    sdbus::IObject* object_;
+	sdbus::IObject *object_;
 };
 
-}}}} // namespaces
+} // namespace Application
+} // namespace configurationManager
+} // namespace system
+} // namespace com
 
 #endif

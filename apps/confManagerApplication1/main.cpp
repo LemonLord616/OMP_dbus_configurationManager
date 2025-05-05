@@ -1,9 +1,8 @@
 #include "TimeoutApp.hpp"
 #include "TimeoutAppDBusProxy.hpp"
-#include <memory>
 #include <iostream>
+#include <memory>
 #include <sdbus-c++/sdbus-c++.h>
-
 
 int main() {
 	const std::string config_file = "~/com.system.configurationManager/confManagerApplication1.json";
