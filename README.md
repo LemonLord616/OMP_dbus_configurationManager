@@ -13,7 +13,8 @@ This project implements a **D-Bus**-based configuration manager in C++ using **s
 * **Signal**:
 
 	* `configurationChanged(a{sv} configuration)` — emitted whenever a configuration changes.
-* **Client adapter** (`ApplicationDBusAdapter`) generated via `sdbus-c++-xml2cpp` and extended to implement business logic.
+* **Adapter/Proxy** (`Configuration_adapter.hpp` and `Configuration_proxy.hpp`) generated via `sdbus-c++-xml2cpp` and extended to implement business logic.
+* **Sample Client** (`TimeoutApp`) that subscribes to `configurationChanged` signal.
 
 ## Prerequisites
 
@@ -28,10 +29,25 @@ This project implements a **D-Bus**-based configuration manager in C++ using **s
 
 ```
 📦
-├── 📂 build
-├── 📂 cache
+│
+├── 📂 apps/confManagerApplication1
+│ ├── 📂 configs
+│ │ └── confManagerApplication1.json
+│ ├── CMakeLists.txt
+│ ├── main.cpp
+│ ├── TimeoutApp.cpp
+│ ├── TimeoutApp.hpp
+│ ├── TimeoutAppDBusProxy.cpp
+│ └── TimeoutAppDBusProxy.hpp
 ├── 📂 cmake
 │ └── GenerateSDBusInterfaces.cmake
+├── 📂 configs
+│ ├── music_player.json
+│ ├── notes_app.json
+│ └── weather_app.json
+├── 📂 included
+│ ├── Configuration_adapter.hpp
+│ └── Configuration_proxy.hpp
 ├── 📂 include
 │ ├── Application.hpp
 │ ├── ApplicationDBusAdapter.hpp
@@ -39,12 +55,11 @@ This project implements a **D-Bus**-based configuration manager in C++ using **s
 ├── 📂 interfaces
 │ └── com.system.configurationManager.Application.Configuration.xml
 ├── 📂 src
-│ ├── 📂 generated
-│ │ ├── Configuration_adapter.hpp
-│ │ └── Configuration_proxy.hpp
 │ ├── ApplicationDBusAdapter.cpp
+│ ├── CMakeLists.txt
 │ ├── ConfigurationManagerService.cpp
 │ └── main.cpp
+├── .clang-format
 ├── .gitignore
 ├── CMakeLists.txt
 └── README.md
@@ -58,18 +73,22 @@ This project implements a **D-Bus**-based configuration manager in C++ using **s
 	git clone https://github.com/LemonLord616/OMP_dbus_configurationManager.git
 	cd OMP_dbus_configurationManager
 	```
+
 2. **Install** dependencies:
 
 	```bash
 	sudo apt update
 	sudo apt install cmake libsdbus-c++-dev nlohmann-json3-dev libglib2.0-bin
 	```
+
 3. **Configure the project**:
 
 	```bash
 	mkdir -p build && cd build
+	cmake -DCMAKE_EXPORT_COMPILE_COMMANDS=0N
 	cmake ..
 	```
+
 4. **Build service or client selectively**
 	* Build **only the service**:
 
@@ -101,8 +120,9 @@ This project implements a **D-Bus**-based configuration manager in C++ using **s
 
 	```bash
 	mkdir -p ~/com.system.configurationManager
-	cp configs/com.system.configurationManager/*.json ~/com.system.configurationManager/
+	cp apps/confManagerApplication1/*.json ~/com.system.configurationManager/
 	```
+
 2. **Start** the D-Bus service:
 
 	```bash
@@ -110,6 +130,33 @@ This project implements a **D-Bus**-based configuration manager in C++ using **s
 	```
 
 	The service will read all `*.json` files in the config folder and register corresponding D-Bus objects.
+
+## Sample client
+
+A sample client (`confManagerApplication1`) is located at `apps/confManagerApplication1`. It:
+
+1. **Reads its config from `~/com.system.configurationManager/confManagerApplication1.json`**
+
+2. **Contains values `Timeout` and `TimeoutPhrase`**
+
+3. **Subscribes to the `configurationChanged` signal**
+
+4. **Prints `TimeoutPhrase` every `Timeout` milliseconds**
+
+## Running sample client
+
+1. **Prepare configuration directory**:
+
+	```bash
+	mkdir -p ~/com.system.configurationManager
+	cp configs/com.system.configurationManager/*.json ~/com.system.configurationManager/
+	```
+
+2. **Start**:
+
+	```bash
+	./build/apps/confManagerApplication1/confManagerApplication1
+	```
 
 ## Introspection & Method Calls
 
@@ -142,3 +189,21 @@ This project implements a **D-Bus**-based configuration manager in C++ using **s
 		--method com.system.configurationManager.Application.Configuration.ChangeConfiguration \
 		'"volume"' 'uint32 60'
 	```
+
+## Usage example
+
+* **In terminal 1**, service active process.
+
+* **In terminal 2**, the `confManagerApplication1` is running, which displays the current `TimeoutPharse` once every `Timeout` ms.
+
+* **In terminal 3**, run the command
+
+	```bash
+	gdbus call --session \
+	--dest com.system.configurationManager \
+	--object-path /com/system/configurationManager/Application/confManagerApplication1 \
+	--method com.system.configurationManager.Application.Configuration.ChangeConfiguration \
+	'"TimeoutPhrase"' "<'Please stop me'>"
+	```
+
+* **Terminal 1** should start displaying the phrase `"Please stop me`.
